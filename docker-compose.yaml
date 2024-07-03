@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  web-gateway-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "18004:18004"
+    networks:
+      - tarificator-network
+    environment:
+      - TARIFF_PATH=http://tariff-backend:18002
+      - PRODUCT_PATH=http://product-backend:18003
+networks:
+  tarificator-network:
+    external: true
