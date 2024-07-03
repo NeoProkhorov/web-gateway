@@ -15,6 +15,7 @@ Main gateway service for Tarifficator application.
 Default url domain: http://localhost:18004/
 
 <h4>Tariff API</h4>
+
 1. ```GET /api/tariffs``` - return all saved tariffs
 2. ```GET /api/tariffs/{id}``` - return tariff by url parameter [id]
 3. ```DELETE /api/tariffs/{id}``` - delete tariff by url parameter [id]
@@ -38,6 +39,7 @@ Default url domain: http://localhost:18004/
     2. Field ```description``` is optional. Other fields are required
    
 <h4>Product API</h4>
+
 1. ```GET /api/products``` - return all saved products
 2. ```GET /api/products/{id}``` - return product by url parameter [id]
 3. ```POST api/products``` - create product
