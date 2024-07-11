@@ -3,8 +3,8 @@ package com.neoflex.prokhorov.web_gateway.web;
 import com.neoflex.prokhorov.web_gateway.service.ProductService;
 import com.neoflex.prokhorov.web_gateway.service.dto.ProductWebDto;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -13,9 +13,9 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("products")
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductController {
-    @Autowired
     ProductService service;
 
     @GetMapping
@@ -29,13 +29,17 @@ public class ProductController {
     }
 
     @PostMapping
-    ProductWebDto create(@RequestBody ProductWebDto dto) {
-        return service.create(dto);
+    ProductWebDto create(@RequestHeader(name = "Authorization") String token, @RequestBody ProductWebDto dto) {
+        return service.create(dto, token);
     }
 
     @PatchMapping("/{id}")
-    ProductWebDto update(@PathVariable UUID id, @RequestBody ProductWebDto dto) {
-        return service.update(id, dto);
+    ProductWebDto update(
+        @RequestHeader(name = "Authorization") String token,
+        @PathVariable UUID id,
+        @RequestBody ProductWebDto dto
+    ) {
+        return service.update(id, dto, token);
     }
 
     @GetMapping("/history/{id}")

@@ -2,7 +2,9 @@ package com.neoflex.prokhorov.web_gateway.web;
 
 import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.AccessLevel;
 import lombok.SneakyThrows;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,9 +17,10 @@ import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WebExceptionHandler {
-    private static final String MSG = "message";
-    private static final String TIMESTAMP = "timestamp";
+    static String MSG = "message";
+    static String TIMESTAMP = "timestamp";
 
     @ExceptionHandler(FeignException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

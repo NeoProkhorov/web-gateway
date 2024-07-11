@@ -9,6 +9,7 @@ services:
     networks:
       - tarificator-network
     environment:
+      - ACCOUNT_PATH=http://account-backend:18001
       - TARIFF_PATH=http://tariff-backend:18002
       - PRODUCT_PATH=http://product-backend:18003
 networks:

@@ -1,7 +1,10 @@
 package com.neoflex.prokhorov.web_gateway.service;
 
 import com.neoflex.prokhorov.web_gateway.client.ProductClient;
+import com.neoflex.prokhorov.web_gateway.client.dto.AccountDto;
 import com.neoflex.prokhorov.web_gateway.client.dto.ProductDto;
+import com.neoflex.prokhorov.web_gateway.security.UserDetailsServiceImpl;
+import com.neoflex.prokhorov.web_gateway.service.dto.AccountWebDto;
 import com.neoflex.prokhorov.web_gateway.service.dto.ProductWebDto;
 import com.neoflex.prokhorov.web_gateway.service.dto.TariffWebDto;
 import com.neoflex.prokhorov.web_gateway.service.mapper.ProductMapper;
@@ -29,6 +32,10 @@ public class ProductService {
     TariffService tariffService;
     @Autowired
     ProductMapper mapper;
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    AccountService accountService;
 
     static final String LOG_MSG = "Отправка запроса на {} продукта.";
     static final String UPDATE = "обновление";
@@ -48,12 +55,12 @@ public class ProductService {
         return getWebDtoFunc.apply(product);
     }
 
-    public ProductWebDto create(ProductWebDto dto) {
-        return doAction(null, dto, (x, y) -> client.create(y), CREATE);
+    public ProductWebDto create(ProductWebDto dto, String token) {
+        return doAction(null, dto, (x, y) -> client.create(y), CREATE, token);
     }
 
-    public ProductWebDto update(UUID id, ProductWebDto dto) {
-        return doAction(id, dto, (x, y) -> client.update(x, y), UPDATE);
+    public ProductWebDto update(UUID id, ProductWebDto dto, String token) {
+        return doAction(id, dto, client::update, UPDATE, token);
     }
 
     public List<ProductWebDto> history(UUID id) {
@@ -81,7 +88,8 @@ public class ProductService {
 
     private final Function<ProductDto, ProductWebDto> getWebDtoFunc = dto -> {
         TariffWebDto tariff = tariffService.getById(dto.getTariffId());
-        return mapper.toWebDto(dto, tariff);
+        AccountWebDto account = accountService.getById(dto.getAccountId());
+        return mapper.toWebDto(dto, tariff, account.getLogin());
     };
 
     private final Function<List<ProductDto>, List<ProductWebDto>> getWebDtosFunc = dtos -> {
@@ -93,12 +101,18 @@ public class ProductService {
             UUID id,
             ProductWebDto webDto,
             BiFunction<UUID, ProductDto, ProductDto> action,
-            String actionStr
+            String actionStr,
+            String token
     ) {
-        ProductDto dto = mapper.toDto(webDto);
+        AccountDto account = getUserByToken(token);
+        ProductDto dto = mapper.toDto(webDto, account.getId());
         TariffWebDto tariff = tariffService.getById(dto.getTariffId());
         log.info(LOG_MSG, actionStr);
         dto = action.apply(id, dto);
-        return mapper.toWebDto(dto, tariff);
+        return mapper.toWebDto(dto, tariff, account.getLogin());
+    }
+
+    private AccountDto getUserByToken(String token) {
+        return userDetailsService.loadUserByToken(token).getAccountDto();
     }
 }

@@ -3,8 +3,8 @@ package com.neoflex.prokhorov.web_gateway.web;
 import com.neoflex.prokhorov.web_gateway.service.TariffService;
 import com.neoflex.prokhorov.web_gateway.service.dto.TariffWebDto;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("tariffs")
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TariffController {
-    @Autowired
     TariffService tariffService;
 
     @DeleteMapping("/{id}")

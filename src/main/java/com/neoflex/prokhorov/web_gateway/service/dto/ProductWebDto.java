@@ -26,4 +26,5 @@ public class ProductWebDto {
     TariffWebDto tariff;
     int version;
     Instant lastModifiedInstant;
+    String login;
 }
