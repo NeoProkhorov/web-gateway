@@ -83,5 +83,6 @@ Default url domain: http://localhost:18004/
        ```{"bankId":null, "surname":null, "name":"Maria", "patronymic":null, "birth":null, "passport":null, "birthPlace":null, "phone":"79000000000", "mail":null, "registrationAddress":"Moscow", "factAddress":null, "login":"qwerty", "password":"admin"}```
 
 <h4>Auth API</h4>
+
 1. ```POST /login``` - authenticate user in system. Return the JWT token
    1. Need to send form-data two fields: ```username``` and ```password```. They are ```login``` and ```password``` from ```Account API```
